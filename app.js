@@ -1,7 +1,7 @@
 //jshint esversion: 6
-
+const client = require("@mailchimp/mailchimp_marketing");
 const express = require("express");
-const request = require("request");
+const https = require("https");
 
 const app = express();
 
@@ -14,12 +14,46 @@ app.get("/", function (req, res) {
   res.sendFile(__dirname + "/index.html");
 });
 
-app.post("/", function (req, res) {
-  var firstName = req.body.fName;
-  var lastName = req.body.lName;
-  var email = req.body.email;
+client.setConfig({
+  apiKey: "4808ca0108a1d5227b0675a578a63886-us7",
+  server: "us7",
+});
 
-  console.log(firstName, lastName, email);
+app.post("/", function (req, res) {
+  const firstName = req.body.fName;
+  const lastName = req.body.lName;
+  const email = req.body.email;
+
+  const subscribingUser = {
+    firstName: firstName,
+    lastName: lastName,
+    email: email,
+  };
+
+  const run = async () => {
+    const response = await client.lists.addListMember("daf158e89b", {
+      email_address: subscribingUser.email,
+      status: "subscribed",
+      merge_fields: {
+        FNAME: subscribingUser.firstName,
+        LNAME: subscribingUser.lastName,
+      },
+    });
+    console.log(response);
+    res.sendFile(__dirname + "/success.html");
+    console.log(
+      `Successfully added contact as an audience member. The contact's id is ${response.id}.`
+    );
+  };
+  run().catch((e) => res.sendFile(__dirname + "/failure.html"));
+});
+
+app.post("/failure", function (req, res) {
+  res.sendFile(__dirname + "/index.html");
+});
+
+app.post("/success", function (req, res) {
+  res.sendFile(__dirname + "/index.html");
 });
 
 app.listen(3000, function () {
