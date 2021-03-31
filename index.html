@@ -71,7 +71,7 @@
   </head>
   <body class="text-center">
     <main class="form-signin">
-      <form>
+      <form action="/" method="POST">
         <img
           class="mb-4"
           src="/img/lanlords-logo.jpeg"
@@ -86,6 +86,7 @@
           type="text"
           class="form-control top"
           placeholder="First Name"
+          name="fName"
           required
           autofocus
         />
@@ -93,9 +94,16 @@
           type="text"
           class="form-control middle"
           placeholder="Last Name"
+          name="lName"
           required
         />
-        <input type="email" class="form-control bottom" placeholder="Email" required />
+        <input
+          type="email"
+          class="form-control bottom"
+          placeholder="Email"
+          name="email"
+          required
+        />
 
         <button class="w-100 btn btn-lg btn-primary" type="submit">
           Sign Me Up!
